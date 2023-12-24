@@ -1,0 +1,343 @@
+---
+title: "Ejercicio-02JaimeRiquelme"
+author: "JaimeRiquelme"
+date: "2023-10-10"
+output: pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(gtools)
+library(combinat)
+```
+
+### 1- Instale los paquetes gtools y combinat con las sentencias: install.packages(’gtools’) y install.packages(’combinat’). Incluya las librerías gtools (library(gtools)) y combinat (library(combinat)).
+
+```{r}
+(library('gtools'))
+(library('combinat'))
+```
+
+### Permutación y Combinación
+La permutación y la combinación son dos conceptos fundamentales en la teoría de la probabilidad y en la estadística. A continuación, se explicará brevemente la diferencia entre ambas y se presentarán las ecuaciones para calcular cada una de ellas.
+
+#### Permutación
+La permutación se refiere a un arreglo ordenado de elementos en los que el orden es importante y se toman todos los elementos. Es decir, el número de permutaciones posibles de n objetos es el número de formas distintas en las que se pueden ordenar estos objetos tomando en cuenta todos los elementos. En las permutaciones sin repetición, cada elemento se puede utilizar una sola vez, mientras que en las permutaciones con repetición, los elementos pueden ser utilizados múltiples veces.
+
+*Formulas para calcular permutaciones:*
+
+##### El numero de permutaciones de n diferentes elementos es:
+$$n! = \prod_{i=1}^{n} i$$
+
+##### El número de permutaciones de un subconjunto de relementos seleccionados de un conjunto de n elementos diferentes es:
+$$ P_{r,n}  = \frac{n!}{(n-r)!} $$
+
+### Permutaciones con repetición
+El numero de permutaciones de n = n1 + n2 + .....+ nr elementos sede diferentes tipos es:
+$$ P_n = \frac{n!}{n_1!n_2!n_3! ... n_r!}$$
+
+
+### Combinación
+Las combinaciones se enfocan en la selección de elementos, y se diferencian de las permutaciones en que el orden no es importante en las combinaciones. En otras palabras, el número de combinaciones posibles de r elementos seleccionados de un conjunto de n elementos es igual al número de maneras diferentes en que se pueden elegir esos r elementos sin importar el orden en que se seleccionen. En las combinaciones sin repetición, cada elemento solo se puede utilizar una vez, mientras que en las combinaciones con repetición, los elementos se pueden usar varias veces.
+
+*Formulas para calcular combinaciones:*
+
+##### El número de combinaciones, para un subconjunto de r elementos que pueden ser seleccionados entre n elementos es denotado como:
+
+$$ C_{n,r} = {n \choose r} = {\frac{n!}{r!(n-r)!}}$$
+
+##### Para realizar una combinación con repetición se utiliza la siguiente fórmula:
+$${n+r-1 \choose r}= \frac{(n+r-1)!}{r!(n-1)!} $$  
+
+### Permutacion Circular
+Una permutación circular es un tipo especial de permutación en la que el orden de los elementos se considera relativo al punto de inicio, y no hay un inicio o final fijo. Es como organizar objetos en un círculo, donde se puede comenzar a contar desde cualquier punto y aún obtener la misma disposición general.
+$$PC_{n} = (n-1)!$$
+
+## Paquetes gtools y permn en R
+
+### Paquete 'gtools'
+
+#### Combinations:
+Esta función Genera combinaciones a partir de un conjunto de n elementos, eligiendo r elementos a la vez. Puede especificar si las repeticiones están permitidas y si se utiliza un conjunto diferente de números en lugar del predeterminado 1:n.
+Ejemplo:
+
+```{r}
+combinations(n = 4, r = 2)
+
+```
+
+#### Permutations
+Genera permutaciones de n elementos, tomados r a la vez. A diferencia de las combinaciones, en las permutaciones el orden de los elementos es relevante. Puede especificar si las repeticiones están permitidas y si se utiliza un conjunto diferente de números.
+Ejemplo:
+
+```{r}
+permutations(n = 3, r = 2)
+
+```
+
+### Paquete 'Combinat'
+
+#### Permn
+Calcula todas las permutaciones posibles de un vector dado.
+Ejemplo:
+
+```{r}
+permn(c("A", "B", "C"))
+
+```
+
+#### Combn
+Esta función, que en realidad es parte del paquete base de R, genera combinaciones de elementos de un vector. Permite especificar cuántos elementos se deben seleccionar a la vez y tiene la capacidad de aplicar una función opcional a cada combinación generada.
+
+```{r}
+combn(x = 4, m = 2)
+
+```
+
+#### Diferencias entre 'gtools' y 'combinat'
+1)Las funciones en gtools son más flexibles en términos de especificar el tamaño del conjunto original, el número de elementos a seleccionar, y si se permiten repeticiones.
+
+2)permn simplemente genera todas las permutaciones posibles de un vector.
+
+3)combn se centra en combinaciones y ofrece la posibilidad de aplicar una función a cada combinación.
+
+
+## Calcular:
+**a)La cantidad de permutaciones posibles con n = 9 y r = 4 con y sin repetición.**
+
+**Con repeticion:**
+```{r}
+nrow(permutations(9,4,repeats.allowed = TRUE))
+
+```
+
+**Sin repeticion:**
+
+```{r}
+nrow(permutations(9,4,repeats.allowed = FALSE))
+
+```
+
+**b)Las combinaciones de largo cuatro con las letras f, g, h, i y j con y sin repetición.**
+
+**Con repeticion:**
+```{r}
+letras <- c("f", "g", "h", "i", "j")
+combinations(n = length(letras),r = 4,v = letras, repeats.allowed = TRUE)
+
+```
+
+**Sin repeticion:**
+
+```{r}
+letras <- c("f", "g", "h", "i", "j")
+combinations(n = length(letras),r = 4,v = letras, repeats.allowed = FALSE)
+
+```
+
+
+**c)La cantidad de permutaciones y combinaciones con n=30 y r=20 sin repetición.**
+```{r}
+#Permutaciones sin repeticion
+permutaciones = factorial(30)/factorial(30-20)
+print(paste("Permutaciones sin repeticion:", permutaciones))
+
+```
+
+```{r}
+#Combinaciones sin repeticion
+comb = factorial(30)/(factorial(20)*factorial(30-20))
+print(paste("combinaciones sin repeticion:", comb))
+```
+
+**d)La cantidad de permutaciones posibles con n=7 y r=5 con y sin repetición**
+
+```{r}
+# Permutaciones con repetición
+permutaciones_con_rep = 7^5
+print(paste("Permutaciones con repetición:", permutaciones_con_rep))
+```
+
+```{r}
+# Permutaciones sin repetición
+permutaciones_sin_rep = factorial(7)/factorial(7-5)
+print(paste("Permutaciones sin repetición:", permutaciones_sin_rep))
+
+```
+
+**e)Las combinaciones de largo dos con los números 1, 2, 3, 4 y 5 con y sin repetición.**
+
+```{r}
+# Combinaciones con repetición
+numeros <- c(1, 2, 3, 4, 5)
+combinaciones_con_rep = combinations(5,2,v = numeros ,repeats.allowed = TRUE)
+print("Combinaciones con repetición:")
+print(t(combinaciones_con_rep))
+```
+
+```{r}
+# Combinaciones sin repetición
+combinaciones_sin_rep = combinations(5,2,v = numeros,repeats.allowed = FALSE)
+print("Combinaciones sin repetición:")
+print(t(combinaciones_sin_rep))
+
+```
+**f)La cantidad de permutaciones y combinaciones con n=50 y r=10 sin repetición**
+```{r}
+# Permutaciones sin repetición
+permutaciones_sin_rep = factorial(50)/factorial(50-10)
+print(paste("Permutaciones sin repetición:", permutaciones_sin_rep))
+
+```
+
+```{r}
+# Combinaciones sin repetición
+combinaciones_sin_rep = factorial(50)/(factorial(10)*factorial(50-10))
+print(paste("Combinaciones sin repetición:", combinaciones_sin_rep))
+
+
+```
+
+**g)La cantidad de permutaciones circulares posibles con n=6.**
+
+```{r}
+# Permutaciones circulares
+permutaciones_circulares = factorial(6-1)
+print(paste("Permutaciones circulares:", permutaciones_circulares))
+
+```
+
+**h)Las combinaciones de largo tres con las letras x, y, z, w y q con y sin repetición.**
+
+```{r}
+# Combinaciones con repetición
+letras <- c("x", "y", "z", "w", "q")
+combinaciones_con_rep = expand.grid(letras, letras, letras)
+print("Combinaciones con repetición:")
+print(combinaciones_con_rep)
+```
+
+```{r}
+# Combinaciones sin repetición
+combinaciones_sin_rep = combn(letras, 3, FUN = NULL, simplify = TRUE)
+print("Combinaciones sin repetición:")
+print(t(combinaciones_sin_rep))
+
+```
+
+### 5- Considere un problema de un repartidor que debe entregar paquetes en 40 casas y volver al origen sin pasar dos veces por la misma casa
+#### a) ¿Cuál es la probabilidad de que elija la ruta más corta? ¿Y la más larga?
+
+```{r}
+CantidadRutas = factorial(40)
+
+ProbabilidadOptima = 1/CantidadRutas
+
+print(paste("La probabilidad de seleccionar la ruta mas corta es de :", ProbabilidadOptima))
+
+```
+
+#### b) Si elige una ruta al azar que es distinta a la anterior, ¿cuál es la probabilidad de que sea la ruta más corta?
+
+```{r}
+
+ProbabilidadDos = 1/ (CantidadRutas - 1)
+
+print(paste("La probabilidad de seleccionar la ruta mas corta, distinta a la anterior :", ProbabilidadDos))
+
+```
+
+### 6. Un restaurante tiene 4 camareros que deben atender a los clientes. Ana atiende al 20 % de los clientes y olvida 1 de cada 15 órdenes; Bob atiende al 50 % de los clientes y olvida 1 de cada 8 órdenes; Carlos atiende al 20 % de los clientes y olvida 1 de cada 12 órdenes; Diana atiende al 10 % de los clientes y olvida 2 de cada 7 órdenes.
+
+#### a) (5 puntos) Formule la ecuación para resolver este problema.
+
+*Formulando el problema:*
+
+$$P(A_i|O) = \frac{P(O|A_i) \times P(A_i)}{P(O|Ana) \times P(Ana) + P(O|Bob) \times P(Bob) + P(O|Carlos) \times P(Carlos) + P(O|Diana) \times P(Diana)}$$
+
+Además nos entregan: 
+
+```{r}
+ProbAna = 0.20
+ProbBob = 0.50
+ProbCarlos = 0.20
+ProbDiana = 0.10
+
+POlvidoAna = 1/15
+POlvidoBob = 1/8
+POlvidoCarlos = 1/12
+POlvidoDiana = 2/7
+
+PNoOlvidoAna = 1 - (1/15)
+PNoOlvidoBob = 1 - (1/8)
+PNoOlvidoCarlos = 1 - (1/12)
+PNoOlvidoDiana = 1 - (2/7)
+
+```
+
+#### b) (5 puntos) ¿Cuál es la probabilidad de que el cliente haya sido atendido por Carlos?
+
+```{r}
+PNoOlvidoTotal = PNoOlvidoAna * ProbAna + PNoOlvidoBob * ProbBob + PNoOlvidoCarlos * ProbCarlos + PNoOlvidoDiana * ProbDiana
+
+PCarlosDadoNoOlvido = (PNoOlvidoCarlos * ProbCarlos) / PNoOlvidoTotal
+
+print(paste(PCarlosDadoNoOlvido))
+
+```
+
+#### c) (5 puntos) ¿Cuál es la probabilidad de que el cliente haya sido atendido por Ana o Diana?
+
+```{r}
+# Probabilidad de que el cliente haya sido atendido por Ana y no olvidara la orden
+PAnaDadoNoOlvido = (PNoOlvidoAna * ProbAna) / PNoOlvidoTotal
+
+# Probabilidad de que el cliente haya sido atendido por Diana y no olvidara la orden
+PDianaDadoNoOlvido = (PNoOlvidoDiana * ProbDiana) / PNoOlvidoTotal
+
+# Probabilidad total de que el cliente haya sido atendido por Ana o Diana
+PAnaODianaDadoNoOlvido = PAnaDadoNoOlvido + PDianaDadoNoOlvido
+
+print(paste("La probabilidad que haya sido antendido por ana o diana es:",PAnaODianaDadoNoOlvido))
+
+```
+
+
+#### d) (5 puntos) Calcule la probabilidad de que el cliente haya sido atendido por cualquiera de los camareros. ¿Qué observa?
+
+```{r}
+PtotalOlvido = ProbDiana*POlvidoDiana + ProbCarlos*POlvidoCarlos + ProbBob*POlvidoBob + ProbAna*POlvidoAna
+
+PanaOlvidado = (POlvidoAna*ProbAna)/PtotalOlvido
+PbobOlvidado = (POlvidoBob*ProbBob)/PtotalOlvido
+PdianaOlvidado = (POlvidoDiana*ProbDiana)/PtotalOlvido
+PcarlosOlvidado = (POlvidoCarlos*ProbCarlos)/PtotalOlvido
+
+Ptotal = PanaOlvidado+PbobOlvidado+PdianaOlvidado+PcarlosOlvidado
+
+print(paste("La probabilidad de ser atendido por cualquiera es:",Ptotal))
+
+#Observamos que la suma de las probabilidades de ser atendido por cada camarero es igual a 1, 
+#lo que tiene sentido ya que un cliente,en este escenario, definitivamente será atendido por uno 
+#de los camareros. Esto es una confirmación de que las probabilidades proporcionadas
+#son coherentes y cubren todos los escenarios posibles para el cliente.
+```
+
+#### 7. (10 puntos) De un grupo de 35 personas, se quiere conocer la opinión de 4 personas (elegidas al azar) sobre la legalización de la marihuana.
+###Si se sabe que 18 personas están a favor y 17 en contra, ¿cuál es la probabilidad de que las 4 personas seleccionadas estén en contra?
+
+```{r}
+# Probabilidad de que la primera persona seleccionada esté en contra
+Pprimero = 17/35
+# Probabilidad de que la segunda persona seleccionada esté en contra
+Psegundo = 16/34
+# Probabilidad de que la tercera persona seleccionada esté en contra
+Ptercero = 15/33
+# Probabilidad de que la cuarta persona seleccionada esté en contra
+Pcuarto = 14/32
+
+# Calculamos la probabilidad total
+Ptotal = Pprimero * Psegundo * Ptercero * Pcuarto
+
+print(paste("La probabilidad de que las 4 personas seleccionadas estén en contra es de", Ptotal, "\n"))
+
+```

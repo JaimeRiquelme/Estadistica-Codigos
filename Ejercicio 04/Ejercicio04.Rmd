@@ -1,0 +1,119 @@
+---
+title: "Visualización del rendimiento estudiantil"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(shiny)
+library(ggplot2)
+```
+
+## Visualización del rendimiento estudiantil
+
+Esta aplicación permite visualizar la distribución de edades y géneros en un conjunto de datos sobre rendimiento estudiantil.
+
+```{r}
+ui <- fluidPage(
+
+  titlePanel("Visualización del rendimiento estudiantil"),
+  sidebarLayout(
+    sidebarPanel(
+      # Panel de selección más compacto
+      selectInput("opcion", "Selecciona una gráfica:",
+                  choices = c("Distribución de edades" = "age", 
+                              "Distribución por género" = "sex"))
+    ),
+    
+    mainPanel(
+    h3("Gráfica"),
+    plotOutput("grafica"),
+    h3("Tabla de datos"),
+    tableOutput("tabla"),
+    hr(),
+    h3("Estadísticas"),
+    verbatimTextOutput("estadisticas"),
+    hr(),
+    h3("Comentarios"),
+    verbatimTextOutput("comentarios"),
+    hr()
+
+  )
+)
+)
+
+server <- function(input, output) {
+  datos <- read.csv("student-mat.csv", sep=";")
+  output$estadisticas <- renderPrint({
+    if (input$opcion == "age") {
+      media <- mean(datos$age, na.rm = TRUE)
+      mediana <- median(datos$age, na.rm = TRUE)
+      desviacion <- sd(datos$age, na.rm = TRUE)
+      rango <- range(datos$age, na.rm = TRUE)
+      varianza <- var(datos$age, na.rm = TRUE)
+      
+
+      cat("Media:", media, "\n",
+          "La media nos indica la edad promedio de los estudiantes, que en este caso es ", media, ".\n")
+      cat("Mediana:", mediana, "\n",
+          "La mediana es la edad que está justo en la mitad de la lista de edades, en este caso es ", mediana, ".\n")
+      cat("Desviación estándar:", desviacion, "\n",
+          "La desviación estándar de ", desviacion, " indica que las edades están bastante agrupadas alrededor de la media.\n")
+      cat("Rango:", rango[1], "-", rango[2], "\n",
+          "El rango nos dice que las edades en este grupo van desde ", rango[1], " hasta ", rango[2], ".\n")
+      cat("Varianza:", varianza, "\n",
+          "La varianza nos da una idea de cómo las edades se dispersan alrededor de la media.\n")
+    } else if (input$opcion == "sex") {
+      tabla_frecuencia <- table(datos$sex)
+      total <- sum(tabla_frecuencia)
+      porcentajes <- round((tabla_frecuencia / total) * 100, 2)
+      cat("Porcentaje de cada género:\n")
+      cat("Masculino: ", porcentajes["M"], "%\n")
+      cat("Femenino: ", porcentajes["F"], "%\n")
+    }
+  })
+  
+
+  output$comentarios <- renderPrint({
+    if (input$opcion == "age") {
+      cat("Esta gráfica muestra la distribución de edades de los estudiantes en el conjunto de datos. Permite visualizar qué grupo de edad es más común. en este caso nos muestra que la edad que mas se repide es 16, seguida de 17.")
+    } else if (input$opcion == "sex") {
+      cat("Esta gráfica muestra la distribución de estudiantes según su género. Ofrece una visión general de la distribución de género en el conjunto de datos. En este caso nos muestra que el género que más se repite es F, seguido por M. esto puede ser útil para análisis relacionados con la equidad de género en el entorno educativo.")
+    }
+  })
+  
+
+output$grafica <- renderPlot({
+  if (input$opcion == "age") {
+    ggplot(datos, aes(x=age, fill=age)) +  # Añadir color basado en la edad
+    geom_bar() + 
+    labs(title="Distribución de edades", x="Edad", y="Frecuencia") + 
+    theme_minimal()
+  } else if (input$opcion == "sex") {
+    ggplot(datos, aes(x=sex, fill=sex)) +  # Añadir color basado en el género
+    geom_bar() + 
+    labs(title="Distribución por género", x="Género", y="Frecuencia") + 
+    theme_minimal()
+  }
+})
+
+
+  output$tabla <- renderTable({
+    if (input$opcion == "age") {
+      tabla_edad <- as.data.frame(table(datos$age))
+      colnames(tabla_edad) <- c("Edad", "Frecuencia")
+      return(tabla_edad)
+    } else if (input$opcion == "sex") {
+      tabla_genero <- as.data.frame(table(datos$sex))
+      colnames(tabla_genero) <- c("Género", "Frecuencia")
+      return(tabla_genero)
+    }
+  })
+
+}
+
+
+shinyApp(ui = ui, server = server)
+
+
+```
